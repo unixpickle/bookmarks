@@ -17,7 +17,7 @@ import (
 
 const (
 	ImagePath = "key_v2.png"
-	OutPath   = "key_v2.obj"
+	OutPath   = "key_v2_full_squoosh.obj"
 
 	WidthMM = 1.5 * 25.4
 
@@ -28,7 +28,7 @@ const (
 
 	SmooshCenter = GrayHeight
 	SmooshScale  = 0.01
-	SmooshCutoff = WhiteHeight + 0.20
+	SmooshCutoff = 0.08
 
 	HoleRadiusMM    = 2.25
 	HoleTopOffsetMM = 7.00
@@ -38,8 +38,7 @@ const (
 	ContourDelta     = 0.15
 	ColorZTolerance  = 0.20
 	BottomZTolerance = 0.08
-	EdgeTopTolerance = 0.06
-	EdgeColorWidthMM = 0.50
+	EdgeColorWidthMM = 1.10
 	SmoothIters      = 12
 	ColorOutsetPx    = 0.35
 )
@@ -120,10 +119,7 @@ func main() {
 
 	colorFn := toolbox3d.CoordColorFunc(func(c model3d.Coord3D) render3d.Color {
 		if edge.Contains(c.XY()) {
-			if topEdgeHeight(c.Z) {
-				return classColor(classBlack)
-			}
-			return classColor(classWhite)
+			return classColor(classBlack)
 		}
 		if math.Abs(c.Z) <= BottomZTolerance {
 			return classColor(classWhite)
@@ -216,10 +212,6 @@ func classForHeight(z float64) (pixelClass, bool) {
 
 func nearHeight(z, height float64) bool {
 	return math.Abs(z-height) <= ColorZTolerance
-}
-
-func topEdgeHeight(z float64) bool {
-	return z >= WhiteHeight-EdgeTopTolerance
 }
 
 func classColor(c pixelClass) render3d.Color {
